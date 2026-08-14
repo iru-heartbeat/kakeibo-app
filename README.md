@@ -1,32 +1,66 @@
-# React + TypeScript + Vite
+# kakeibo-app
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+1分で入力を終えることを目指した家計簿PWAアプリです。支払方法が多様化した今、「何で・何を・いくら」払ったかを一目で把握できるようにし、固定費の自動記録や、利用日ベース／支払日ベースの二軸集計で使いすぎチェックと資金繰りの両方をカバーします。
 
-Currently, two official plugins are available:
+## 主な機能
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+### 収支入力（1分入力）
+- **支出**: 金額・カテゴリ・支払方法・利用日を入力するだけ。カテゴリ／支払方法は固定リストに加えてその場で追加可能（カテゴリは親子構造にも対応、例: 食費 > 外食費）
+- **固定費**: 家賃やサブスクなど毎月/毎週発生する支出をスケジュール（毎月◯日 / 毎週◯曜日）で1回登録すれば、以降は自動で履歴・集計に反映（再入力不要）
+- **収入**: 給与・賞与・副業などの入金を金額・カテゴリ・受取日で記録
+- **クレジットカード**: カード名・締め日・支払日・支払月ルールを一度設定すれば、以後は利用日から支払日（引き落とし日）を自動計算。設定は後から編集可能で、必要なら個々の取引で手動上書きもできる
 
-## React Compiler
+### 集計
+- 週／月、利用日ベース／支払日ベースを切り替え表示
+- カテゴリ別支出の円グラフと内訳リスト
+- 月間収支カード（収入・支出・差引金額・収入に対する支出使用率）
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### 履歴
+- カテゴリ・支払方法・入力者・支出／収入でフィルタ
+- 一覧からその場で編集・削除
 
-## Expanding the Oxlint configuration
+### その他
+- PWA対応（ホーム画面に追加してアプリのように利用可能、オフラインキャッシュ）
+- ライト／ダークモードは端末設定に自動追従
+- 複数人での利用を想定し、取引ごとに入力者を記録（同期はせず、同一端末・同一データを共有する運用を想定）
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+## 技術スタック
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+| 分野 | 技術 |
+|---|---|
+| フレームワーク | React 19 + TypeScript + Vite |
+| ルーティング | React Router |
+| データ永続化 | Dexie.js（IndexedDB） + dexie-react-hooks（ローカルファースト、サーバー不要） |
+| グラフ | Recharts |
+| 日付計算 | date-fns（締め日/支払日、固定費スケジュールの計算） |
+| PWA | vite-plugin-pwa |
+| Lint | oxlint |
+
+## セットアップ
+
+```bash
+npm install
+npm run dev
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+## ビルド
+
+```bash
+npm run build
+```
+
+## Live Demo
+
+（Vercelへのデプロイ後、ここにURLを追加）
+
+## ディレクトリ構成
+
+```
+src/
+  db/         Dexieスキーマ・初期シードデータ
+  types/      共有の型定義
+  lib/        支払日計算・固定費スケジュール計算・集計ロジックなどのドメインロジック
+  hooks/      IndexedDBへの読み書きフック（dexie-react-hooks）
+  components/ カテゴリ/支払方法/入力者ピッカー、固定費フォームなどのUI部品
+  pages/      ホーム（入力）・集計・履歴の3画面
+```
