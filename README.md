@@ -51,7 +51,7 @@ npm run build
 
 ## Live Demo
 
-（Vercelへのデプロイ後、ここにURLを追加）
+https://kakeibo-app-ten-pi.vercel.app
 
 ## ディレクトリ構成
 
