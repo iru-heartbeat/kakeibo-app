@@ -29,7 +29,7 @@ async function ensureCategory(name: string, kind: CategoryKind, sortOrder: numbe
 }
 
 async function ensurePaymentMethod(input: (typeof DEFAULT_PAYMENT_METHODS)[number], sortOrder: number): Promise<void> {
-  const exists = await db.paymentMethods.where({ name: input.name }).first()
+  const exists = await db.paymentMethods.filter((m) => m.name === input.name).first()
   if (exists) return
   await db.paymentMethods.add({
     id: crypto.randomUUID(),
@@ -40,7 +40,7 @@ async function ensurePaymentMethod(input: (typeof DEFAULT_PAYMENT_METHODS)[numbe
 }
 
 async function ensurePayer(name: string, sortOrder: number): Promise<void> {
-  const exists = await db.payers.where({ name }).first()
+  const exists = await db.payers.filter((p) => p.name === name).first()
   if (exists) return
   await db.payers.add({ id: crypto.randomUUID(), name, sortOrder })
 }
