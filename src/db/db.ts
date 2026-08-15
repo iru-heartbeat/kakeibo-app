@@ -41,6 +41,10 @@ export class KakeiboDB extends Dexie {
             if (!transaction.kind) transaction.kind = 'expense'
           })
       })
+
+    this.version(3).stores({
+      fixedCosts: 'id, categoryId, paymentMethodId, payerId, createdAt',
+    })
   }
 }
 
